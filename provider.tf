@@ -1,4 +1,4 @@
 provider "google" {
-  project     = "my-project-id"
-  region      = "us-central1"
+  project     = "striking-optics-303222"
+  region      = var.region
 }
