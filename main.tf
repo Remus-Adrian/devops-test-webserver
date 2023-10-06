@@ -1,34 +1,42 @@
 
-// creating a cloud resource 
-resource "google_compute_instance" "default" {
-  name         = "test"
-  machine_type = "f1-micro"
+// creating a Vm for quake server 
+resource "google_compute_instance" "vm_quake_live" {
+  name         = "ubuntu-quakelive"
+  machine_type = "n1-highcpu-2"
   zone         = var.zone
 
-  tags = ["foo", "bar"]
+  tags = ["qlsrv"]
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-11"
+      image = "ubuntu-os-cloud/ubuntu-2204-lts"
       labels = {
         my_label = "value"
       }
     }
   }
-
-  
-
-  network_interface {
+   network_interface {
     network = "default"
 
     access_config {
       // Ephemeral public IP
     }
   }
+}
 
-  
+resource "google_compute_firewall" "ql-server-default" {
+  name    = "ql-server"
+  network = "default"
 
+  allow {
+    protocol = "udp"
+    ports    = ["27960"]
+  }
 
+  allow {
+    protocol = "tcp"
+    ports    = ["27960"]
+  }
 
-  
+  source_tags = ["qlsrv"]
 }
